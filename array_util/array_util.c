@@ -16,3 +16,18 @@ int areEqual(ArrayUtil first ,ArrayUtil second){
       return 1;
    return 0;
 }
+
+ArrayUtil resize(ArrayUtil array, int new_size){
+   array.base = realloc(array.base ,array.typeSize * new_size);
+   array.length = new_size;
+   return array;
+}
+
+int findIndex(ArrayUtil util ,void *element){
+   for (int i = 0; i < util.length; i++) {
+      int validation = memcmp(util.base+( i * util.typeSize) , element ,1);
+      if(validation ==0 )
+         return i;
+   }
+   return -1;
+}
