@@ -1,6 +1,7 @@
 #include <stdio.h>
-#include <assert.h>
 #include <stdlib.h>
+#include <string.h>
+#include <assert.h>
 
 #include "array_util.h"
 
@@ -31,9 +32,17 @@ void test_create_array_util_for_char(int *num){
    ArrayUtil name = create(1,5);
    assert(name.typeSize == 1);
    assert(name.length == 5);
+
    char *c = (char *)name.base;
-   c[0] = 'c';
-   assert(c[0] == 'c');
+   c[0] = 'h';
+   c[1] = 'e';
+   c[2] = 'l';
+   c[3] = 'l';
+   c[4] = 'o';
+
+   assert(c[0] == 'h');
+   assert(strcmp("hello" ,c) == 0);
+
    free(c);
    (*num)++;
 }
