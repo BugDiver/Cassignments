@@ -12,7 +12,7 @@ void test_create_array_util_for_int(int *num){
    int *a  = (int *)scores.base;
    a[0] = 95;
    assert(a[0] == 95);
-   free(a);
+   dispose(scores);
    (*num)++;
 }
 
@@ -23,7 +23,7 @@ void test_create_array_util_for_float(int *num){
    float *b = (float *)weight.base;
    b[0] = 10.5;
    assert(b[0] == 10.5);
-   free(b);
+   dispose(weight);
    (*num)++;
 }
 
@@ -43,7 +43,7 @@ void test_create_array_util_for_char(int *num){
    assert(c[0] == 'h');
    assert(strcmp("hello" ,c) == 0);
 
-   free(c);
+   dispose(name);
    (*num)++;
 }
 
@@ -58,8 +58,9 @@ void test_are_equal_for_int_type_array_util(int *num){
    int deff = areEqual(score1 ,score2);
    assert(deff == 0);
    (*num)++;
-   free(s1);
-   free(s2);
+
+   dispose(score1);
+   dispose(score2);
 }
 
 void test_are_equal_for_char_type_array_util(int *num){
@@ -83,8 +84,8 @@ void test_are_equal_for_char_type_array_util(int *num){
    assert(validation == 1);
    (*num)++;
 
-   free(f);
-   free(s);
+   dispose(f_name);
+   dispose(s_name);
 }
 
 void test_resize_array_util_for_int_type(int *num){
@@ -94,6 +95,7 @@ void test_resize_array_util_for_int_type(int *num){
    scores = resize(scores ,3);
    assert(scores.length == 3);
    (*num)++;
+   dispose(scores);
 }
 
 void test_resize_array_util_for_char_type(int *num){
@@ -103,6 +105,7 @@ void test_resize_array_util_for_char_type(int *num){
    name = resize(name ,3);
    assert(name.length == 3);
    (*num)++;
+   dispose(name);
 }
 
 void test_find_index_for_int_type(int *num){
@@ -119,6 +122,7 @@ void test_find_index_for_int_type(int *num){
    assert(index_of_z == 3);
    assert(index_of_a == -1);
    (*num)++;
+   dispose(scores);
 }
 
 void test_find_index_for_char_type(int *num){
@@ -139,9 +143,12 @@ void test_find_index_for_char_type(int *num){
    assert(index_of_a == -1);
 
    (*num)++;
+   dispose(name);
 }
+
 int main() {
    int no_of_passing_test = 0;
+
    test_create_array_util_for_int(&no_of_passing_test);
    test_create_array_util_for_float(&no_of_passing_test);
    test_create_array_util_for_char(&no_of_passing_test);
