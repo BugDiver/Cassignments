@@ -1,10 +1,11 @@
+#include "array_util.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
 
 
-#include "array_util.h"
 
 void test_create_array_util_for_int(int *num){
    ArrayUtil scores = create(4 ,5);
@@ -168,7 +169,7 @@ void test_find_first_for_int_type(int * num){
    (*num)++;
 };
 
-char tolower(char character){
+char to_lower(char character){
    if(character  >= 'A' && character <='Z')
       return character + 32;
    return character;
@@ -176,18 +177,19 @@ char tolower(char character){
 
 int is_vowel(void *hint ,void *my_char){
    char c = *(char *)my_char;
-   c = tolower(c);
+   c = to_lower(c);
    if(c == 'a' || c== 'e'|| c== 'i'|| c== 'o'|| c== 'u')
       return 1;
    return 0;
 }
+
 
 void test_find_first_for_char_type(int * num){
    ArrayUtil name = create(sizeof(char),5);
    char *s  = (char *)name.base;
    s[0] ='h', s[1] = 'e', s[2] = 'l', s[3] = 'l', s[4] = 'o';
    char a = 'a';
-   int f_vowel = *(char *)findFirst(name ,is_vowel , &a);
+   char f_vowel = *(char *)findFirst(name ,is_vowel , &a);
    assert(f_vowel == 'e');
    (*num)++;
 }
@@ -210,11 +212,93 @@ void test_find_last_for_char_type(int * num){
    char *n  = (char *)name.base;
    n[0] ='h', n[1] = 'e', n[2] = 'l', n[3] = 'l', n[4] = 'o';
    char a = 'a';
-   int l_vowel = *(char *)findLast(name ,is_vowel , &a);
+   char l_vowel = *(char *)findLast(name ,is_vowel , &a);
    assert(l_vowel == 'o');
    (*num)++;
 }
+void test_count_for_int_type(int *num){
+   ArrayUtil integers = create(sizeof(int),5);
+   int *s  = (int *)integers.base;
+   s[0] = 15, s[1] = 2, s[2] = 6, s[3] = 4, s[4] = 5;
+   int divider1 = 2;
+   int no_of_even_numbers = count(integers ,divisibleBy , &divider1);
+   assert(no_of_even_numbers == 3);
+   (*num)++;
 
+};
+
+void test_count_for_char_type(int * num){
+   ArrayUtil name = create(sizeof(char),5);
+   char *n  = (char *)name.base;
+   n[0] ='h', n[1] = 'e', n[2] = 'l', n[3] = 'l', n[4] = 'o';
+   char a = 'a';
+   int count_of_vowel = count(name ,is_vowel , &a);
+   assert(count_of_vowel == 2);
+   (*num)++;
+}
+
+int is_even(void *hint, void *item){
+  int *num = (int *)item;
+  if(*num % 2 == 0)
+    return 1;
+  return 0;
+};
+
+int is_greater_than(void *hint ,void *num){
+   int num1 = *(int *)hint;
+   int num2 = *(int *)num;
+   if(num2 > num1)
+      return 1;
+   return 0;
+}
+
+void test_filter_array_util_for_int_type(int *num){
+   ArrayUtil scores = create(sizeof(int) ,6);
+   int *s = (int *)scores.base;
+   s[0] = 92; s[1] = 45; s[2] = 90; s[3] = 76; s[4] = 54, s[5] = 73;
+   int hint = 75;
+   ArrayUtil destination = create(sizeof(int),4);
+   int no_of_distinction = filter(scores ,&is_greater_than ,&hint, destination.base ,destination.length);
+   assert(no_of_distinction == 3);
+   (*num)++;
+}
+
+
+
+void test_filter_should_add_elements_into_given_array(int * num){
+   ArrayUtil a = create(4,5);
+   int * list_array = (int *)(a.base);
+   list_array[0] = 12;
+   list_array[1] = 25;
+   list_array[2] = 34;
+   list_array[3] = 45;
+   list_array[4] = 5;
+   ArrayUtil dest = create(4, 10);
+   assert(filter(a, &is_even, NULL, dest.base, 10) == 2);
+
+   int **d = ((int **)dest.base);
+   assert(*d[0] == 12);
+   assert(*d[1] == 34);
+   (*num)++;
+
+};
+void test_filter_should_add_the_addresses_of_elements_into_given_array(int * num){
+   ArrayUtil a = create(1,5);
+   char * list_array = (char *)(a.base);
+   list_array[0] = 'a';
+   list_array[1] = 'b';
+   list_array[2] = 'c';
+   list_array[3] = 'd';
+   list_array[4] = 'e';
+
+   ArrayUtil dest = create(1, 5);
+   assert(filter(a, &is_vowel, NULL, dest.base, 10) == 2);
+
+   char **d = (char **)dest.base;
+   assert(*d[0] == 'a');
+   assert(*d[1] == 'e');
+   (*num)++;
+};
 
 int main() {
    int no_of_passing_test = 0;
@@ -222,17 +306,29 @@ int main() {
    test_create_array_util_for_int(&no_of_passing_test);
    test_create_array_util_for_float(&no_of_passing_test);
    test_create_array_util_for_char(&no_of_passing_test);
+
    test_are_equal_for_char_type_array_util(&no_of_passing_test);
    test_are_equal_for_int_type_array_util(&no_of_passing_test);
+
    test_resize_array_util_for_int_type(&no_of_passing_test);
    test_resize_array_util_for_char_type(&no_of_passing_test);
+
    test_find_index_for_int_type(&no_of_passing_test);
    test_find_index_for_char_type(&no_of_passing_test);
+
    test_find_first_for_int_type(&no_of_passing_test);
    test_find_first_for_char_type(&no_of_passing_test);
+
    test_find_last_for_int_type(&no_of_passing_test);
    test_find_last_for_char_type(&no_of_passing_test);
 
+   test_count_for_int_type(&no_of_passing_test);
+   test_count_for_char_type(&no_of_passing_test);
+
+   test_filter_array_util_for_int_type(&no_of_passing_test);
+   test_filter_should_add_elements_into_given_array(&no_of_passing_test);
+   test_filter_should_add_the_addresses_of_elements_into_given_array(&no_of_passing_test);
+   
    printf("no of passing tests ==>> %d\n", no_of_passing_test);
    return 0;
 }

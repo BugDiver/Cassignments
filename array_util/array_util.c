@@ -51,3 +51,25 @@ void* findLast(ArrayUtil list,MatchFunc* match, void* hint){
    }
    return 0;
 };
+
+int count(ArrayUtil list,MatchFunc* match, void* hint){
+   int count = 0;
+   for (int i = 0; i < list.length; i++) {
+      if(match( hint,list.base+(i*list.typeSize)) == 1)
+         count++;
+   }
+   return count;
+}
+
+int filter(ArrayUtil util, MatchFunc *match, void *hint, void **destination, int maxItems){
+   void *base = util.base;
+   int count = 0;
+   for(int i = 0; i < util.length && count < maxItems; i++){
+    if(match(hint, base)){
+      destination[count] = base;
+      count++;
+    };
+    base = base + util.typeSize;
+   };
+   return count;
+};
