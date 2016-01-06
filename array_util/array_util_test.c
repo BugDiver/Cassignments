@@ -3,6 +3,7 @@
 #include <string.h>
 #include <assert.h>
 
+
 #include "array_util.h"
 
 void test_create_array_util_for_int(int *num){
@@ -146,6 +147,75 @@ void test_find_index_for_char_type(int *num){
    dispose(name);
 }
 
+int divisibleBy(void *num1 ,void *num2){
+   int divider = *(int *)num1;
+   int dividend = *(int *)num2;
+   if(dividend % divider == 0)
+      return 1;
+   return 0;
+}
+
+void test_find_first_for_int_type(int * num){
+   ArrayUtil integers = create(sizeof(int),5);
+   int *s  = (int *)integers.base;
+   s[0] = 15, s[1] = 2, s[2] = 3, s[3] = 4, s[4] = 5;
+   int divider1 =2;
+   int f_num = *(int *)findFirst(integers ,divisibleBy , &divider1);
+   assert(f_num == 2);
+   int divider2 = 5;
+   int first_multiple_of_5 = *(int *)findFirst(integers ,divisibleBy , &divider2);
+   assert(first_multiple_of_5 = 15);
+   (*num)++;
+};
+
+char tolower(char character){
+   if(character  >= 'A' && character <='Z')
+      return character + 32;
+   return character;
+}
+
+int is_vowel(void *hint ,void *my_char){
+   char c = *(char *)my_char;
+   c = tolower(c);
+   if(c == 'a' || c== 'e'|| c== 'i'|| c== 'o'|| c== 'u')
+      return 1;
+   return 0;
+}
+
+void test_find_first_for_char_type(int * num){
+   ArrayUtil name = create(sizeof(char),5);
+   char *s  = (char *)name.base;
+   s[0] ='h', s[1] = 'e', s[2] = 'l', s[3] = 'l', s[4] = 'o';
+   char a = 'a';
+   int f_vowel = *(char *)findFirst(name ,is_vowel , &a);
+   assert(f_vowel == 'e');
+   (*num)++;
+}
+
+void test_find_last_for_int_type(int * num){
+   ArrayUtil integers = create(sizeof(int),5);
+   int *s  = (int *)integers.base;
+   s[0] = 15, s[1] = 2, s[2] = 3, s[3] = 4, s[4] = 5;
+   int divider1 =2;
+   int l_num = *(int *)findLast(integers ,divisibleBy , &divider1);
+   assert(l_num == 4);
+   int divider2 = 5;
+   int last_multiple_of_5 = *(int *)findLast(integers ,divisibleBy , &divider2);
+   assert(last_multiple_of_5 = 5);
+   (*num)++;
+};
+
+void test_find_last_for_char_type(int * num){
+   ArrayUtil name = create(sizeof(char),5);
+   char *n  = (char *)name.base;
+   n[0] ='h', n[1] = 'e', n[2] = 'l', n[3] = 'l', n[4] = 'o';
+   char a = 'a';
+   int l_vowel = *(char *)findLast(name ,is_vowel , &a);
+   assert(l_vowel == 'o');
+   (*num)++;
+}
+
+
 int main() {
    int no_of_passing_test = 0;
 
@@ -158,7 +228,10 @@ int main() {
    test_resize_array_util_for_char_type(&no_of_passing_test);
    test_find_index_for_int_type(&no_of_passing_test);
    test_find_index_for_char_type(&no_of_passing_test);
-
+   test_find_first_for_int_type(&no_of_passing_test);
+   test_find_first_for_char_type(&no_of_passing_test);
+   test_find_last_for_int_type(&no_of_passing_test);
+   test_find_last_for_char_type(&no_of_passing_test);
 
    printf("no of passing tests ==>> %d\n", no_of_passing_test);
    return 0;
