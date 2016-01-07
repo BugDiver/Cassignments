@@ -73,3 +73,28 @@ int filter(ArrayUtil util, MatchFunc *match, void *hint, void **destination, int
    };
    return count;
 };
+
+void map(ArrayUtil source, ArrayUtil destination, ConvertFunc *convert, void *hint){
+   void *base = source.base;
+   void *dest = destination.base;
+   for(int i = 0; i < source.length; i++){
+      convert(hint, base, dest);
+      base = base + source.typeSize;
+      dest = dest + destination.typeSize;
+   };
+};
+void forEach(ArrayUtil util, OperationFunc* operation, void* hint){
+   void *base = util.base;
+   for (int i = 0; i < util.length; i++) {
+      operation(hint ,base);
+      base = base+util.typeSize;
+   }
+};
+void* reduce(ArrayUtil util, ReducerFunc* reducer, void* hint, void* initialValue){
+   void *base = util.base;
+   for (int i = 0; i < util.length; i++) {
+      initialValue  = reducer(hint ,initialValue ,base);
+      base = base+util.typeSize;
+   }
+   return initialValue;
+};

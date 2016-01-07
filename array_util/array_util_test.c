@@ -300,6 +300,126 @@ void test_filter_should_add_the_addresses_of_elements_into_given_array(int * num
    (*num)++;
 };
 
+void increment_by(void *hint, void *sourceItem, void *destinationItem){
+   int *num = (int *)sourceItem;
+   int *increment = (int *)hint;
+   *num = *num + *increment;
+   *((int *)destinationItem) = *num;
+};
+
+void test_map_should_copy_converted_element_in_destination(int * num){
+   ArrayUtil source = create(sizeof(int),5);
+   int * list = (int *)(source.base);
+   list[0] = 12;
+   list[1] = 2;
+   list[2] = 3;
+   list[3] = 4;
+   list[4] = 5;
+
+   ArrayUtil destination = create(4,5);
+   int increment = 2;
+
+   map(source, destination, &increment_by, &increment);
+   int *d = (int *)destination.base;
+
+   assert(d[0] == 14);
+   assert(d[1] == 4);
+   assert(d[2] == 5);
+   assert(d[3] == 6);
+   assert(d[4] == 7);
+   (*num)++;
+};
+
+void rot_13(void *hint, void *sourceItem, void *destinationItem){
+   char *c = (char *)sourceItem;
+   if(to_lower(*c) < 'n')
+      *c = *c + 13;
+   else
+      *c = *c - 13;
+   *((char *)destinationItem) = *c;
+}
+
+void test_map_should_cpy_converted_element_in_destination_for_char(int * num){
+   ArrayUtil name = create(sizeof(char) ,5);
+   char *n = (char *)name.base;
+   n[0] = 'h',n[1] = 'e',n[2] = 'l',n[3] = 'l',n[4] = 'o';
+
+   ArrayUtil destination = create(sizeof(char),5);
+   map(name, destination, &rot_13, NULL);
+
+   char *d = (char *)destination.base;
+   assert(d[0] == 'u');
+   assert(d[1] == 'r');
+   assert(d[2] == 'y');
+   assert(d[3] == 'y');
+   assert(d[4] == 'b');
+   assert(strcmp(d ,"uryyb") == 0);
+   (*num)++;
+}
+
+void decrement_by(void *hint ,void *item){
+   *((int *)item) = *((int *)item) - *((int *)hint);
+}
+
+void test_forEach_executes_operation_for_each_int_element(int * num){
+  ArrayUtil source = create(4,5);
+  int * list_array = (int *)(source.base);
+  list_array[0] = 12;
+  list_array[1] = 32;
+  list_array[2] = 33;
+  list_array[3] = 42;
+  list_array[4] = 54;
+
+  int hint = 10;
+  forEach(source, &decrement_by, &hint);
+
+  assert(((int *)source.base)[0] == 2);
+  assert(((int *)source.base)[1] == 22);
+  assert(((int *)source.base)[2] == 23);
+  assert(((int *)source.base)[3] == 32);
+  assert(((int *)source.base)[4] == 44);
+  (*num)++;
+};
+
+void to_upper(void* hint, void* item){
+   if(*(char *)item >='a' && *(char *)item <='z')
+      *((char *)item) = *((char *)item) - 32;
+}
+
+void test_forEach_executes_operation_for_each_char_element(int *num){
+  ArrayUtil source = create(1,5);
+  char * list_array = (char *)(source.base);
+  list_array[0] = 'a';
+  list_array[1] = 'b';
+  list_array[2] = 'c';
+  list_array[3] = 'd';
+  list_array[4] = 'e';
+
+
+  forEach(source, &to_upper, NULL);
+  assert(((char *)source.base)[0] == 'A');
+  assert(((char *)source.base)[1] == 'B');
+  assert(((char *)source.base)[2] == 'C');
+  assert(((char *)source.base)[3] == 'D');
+  assert(((char *)source.base)[4] == 'E');
+  (*num)++;
+};
+
+
+void* add(void* hint, void* previousItem, void* item){
+   *((int *)previousItem) = *((int *)previousItem) + *((int *)item);
+   return previousItem;
+}
+
+void test_reduce_reduces_the_list_and_gives_a_value(int * num){
+   ArrayUtil list = create(4,5);
+   int * list_array = (int *)(list.base);
+   list_array[0] = 1,list_array[1] = 2,list_array[2] = 3,list_array[3] = 4,list_array[4] = 5;
+   int init = 10;
+   int result = *(int *)reduce(list ,add ,NULL ,&init);
+   assert(result == 25);
+   (*num)++;
+}
 int main() {
    int no_of_passing_test = 0;
 
@@ -328,7 +448,15 @@ int main() {
    test_filter_array_util_for_int_type(&no_of_passing_test);
    test_filter_should_add_elements_into_given_array(&no_of_passing_test);
    test_filter_should_add_the_addresses_of_elements_into_given_array(&no_of_passing_test);
-   
+
+   test_map_should_copy_converted_element_in_destination(&no_of_passing_test);
+   test_map_should_cpy_converted_element_in_destination_for_char(&no_of_passing_test);
+
+   test_forEach_executes_operation_for_each_int_element(&no_of_passing_test);
+   test_forEach_executes_operation_for_each_char_element(&no_of_passing_test);
+
+   test_reduce_reduces_the_list_and_gives_a_value(&no_of_passing_test);
+
    printf("no of passing tests ==>> %d\n", no_of_passing_test);
    return 0;
 }
