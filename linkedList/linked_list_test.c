@@ -295,6 +295,32 @@ void test_map_should_return_new_list_which_consist_the_all_mapped_elements(){
 	assert(*(int *)getElementAt(mappedList ,3) == 40);
 	assert(*(int *)getElementAt(mappedList ,4) == 50);
 
+	assert(getElementAt(list ,0) == &num1);
+	assert(getElementAt(list ,1) == &num2);
+	assert(getElementAt(list ,2) == &num3);
+	assert(getElementAt(list ,3) == &num4);
+	assert(getElementAt(list ,4) == &num5);
 
+};
+
+void* add(void* hint, void* previousItem, void* item){
+   *((int *)previousItem) = *((int *)previousItem) + *((int *)item);
+   return previousItem;
+}
+
+void test_reduce_should_return_the_reduced_value_according_the_reducer_function(){
+	LinkedList list = createList();
+	int num1 = 1,num2 = 2,num3 = 3,num4 = 4,num5 = 5;
+
+	add_to_list(&list, &num1);
+	add_to_list(&list, &num2);
+	add_to_list(&list, &num3);
+	add_to_list(&list, &num4);
+	add_to_list(&list, &num5);
+
+	int init = 10;
+	void *result = reduce(list ,add ,NULL ,&init);
+
+	assert(*(int *)result == 25);
 
 };
