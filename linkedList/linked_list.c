@@ -48,3 +48,42 @@ void forEach(LinkedList list, ElementProcessor operater){
 		element = element->next;
 	}
 }
+
+void * getElementAt(LinkedList list, int index){
+	if(index > list.length-1)
+		return NULL;
+	Element *temp = list.head;
+	int i=0;
+	while(i  != index){
+	   temp=temp->next;
+	   i++;
+	}
+	return temp->value;
+};
+
+int indexOf(LinkedList list, void *data){
+	Element *temp = list.head;
+	int i=0;
+	while(i  < list.length){
+		if(temp->value == data)
+			return i;
+	   temp=temp->next;
+	   i++;
+	};
+	return -1;
+}
+
+
+void * deleteElementAt(LinkedList *list, int index){
+	Element *temp = list->head;
+	int i=0;
+	while(i  != index){
+	   temp=temp->next;
+	   i++;
+	};
+	temp->next->prev = temp->prev;
+	temp->prev->next = temp->next;
+
+	list->length--;
+	return temp->value;
+};

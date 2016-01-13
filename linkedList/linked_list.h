@@ -19,4 +19,7 @@ LinkedList createList();
 int add_to_list(LinkedList *,void *);
 void *get_first_element(LinkedList);
 void *get_last_element(LinkedList);
+void * getElementAt(LinkedList, int );
+int indexOf(LinkedList, void *);
+void * deleteElementAt(LinkedList *, int);
 void forEach(LinkedList, ElementProcessor);
