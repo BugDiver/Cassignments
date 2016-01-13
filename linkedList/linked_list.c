@@ -19,7 +19,6 @@ int add_to_list(LinkedList *list,void *data){
 	element->value = data;
 	element->next = NULL;
 	element->prev = NULL;
-
 	if(list->length==0){
 		list->head = list->tail = element;
 	}
@@ -73,17 +72,28 @@ int indexOf(LinkedList list, void *data){
 	return -1;
 }
 
-
 void * deleteElementAt(LinkedList *list, int index){
+	if(index >= list->length){
+		return NULL;
+	}
 	Element *temp = list->head;
 	int i=0;
 	while(i  != index){
 	   temp=temp->next;
 	   i++;
 	};
-	temp->next->prev = temp->prev;
-	temp->prev->next = temp->next;
+	if(index == 0){
+		temp->next->prev = NULL;
+		list->head = temp->next;
+	}else if(index == list->length-1){
+		temp->prev->next = NULL;
+		list->tail = temp->prev;
 
+	}
+	else{
+		temp->next->prev = temp->prev;
+		temp->prev->next = temp->next;
+	}
 	list->length--;
 	return temp->value;
 };

@@ -100,27 +100,6 @@ void test_for_each_performs_a_given_operation_on_every_element(){
 
 }
 
-// void insert(List *list ,int value , int position){
-// 	if(position == 0){
-// 		add_as_first(list , value);
-// 	}else if(position == list->length-1){
-// 		add_as_last(list ,value);
-// 	}else{
-// 		Element *element =  setValue(value);
-// 		Element *temp = list->f_element;
-//       int i=1;
-//       while(i  != position)  {
-//           temp=temp->next;
-//           i++;
-//       }
-//       element->next=temp->next;
-//       element->prev=temp;
-//       temp->next->prev=element;
-//       temp->next=element;
-// 	}
-// }
-
-
 void test_getElementAt_should_return_the_refrence_of_value_at_given_index(){
 	LinkedList list  =createList();
 	int num1 = 12,num2 = 22,num3 = 32,num4 = 42;
@@ -175,21 +154,31 @@ void test_indexOf_should_return_the_first_index_at_which_this_element_occurs(){
 void test_deleteElementAt_should_delete_the_element_at_give_index_and_return_refrence_of_deleted_value(){
 	LinkedList list  =createList();
 
-	int num1 = 12,num2 = 22,num3 = 32,num4 = 42 ,num5=53;
+	int num1 = 12,num2 = 22,num3 = 32,num4 = 42,num5=52;
 	add_to_list(&list ,&num1);
 	add_to_list(&list ,&num2);
 	add_to_list(&list ,&num3);
 	add_to_list(&list ,&num4);
+	add_to_list(&list ,&num5);
 
-	void *deletedElement = deleteElementAt(&list ,2);
+
+	void *headRefrence = deleteElementAt(&list ,0);
+	assert(list.length == 4);
+	assert(headRefrence = &num1);
+	assert(getElementAt(list ,0) == &num2);
+
+	void *tailRefrence = deleteElementAt(&list ,list.length-1);
 	assert(list.length == 3);
+	assert(tailRefrence = &num5);
+	assert(getElementAt(list ,list.length-1) == &num4);
+
+	void *deletedElement = deleteElementAt(&list ,1);
+	assert(list.length == 2);
 	assert(deletedElement == &num3);
 	assert(*(int *)deletedElement == 32);
 
-	assert(*(int *)getElementAt(list,0) == 12);
-	assert(*(int *)getElementAt(list,1) == 22);
-	assert(*(int *)getElementAt(list,2) == 42);
-
+	assert(*(int *)getElementAt(list,0) == 22);
+	assert(*(int *)getElementAt(list,1) == 42);
 };
 
 // int main(){
