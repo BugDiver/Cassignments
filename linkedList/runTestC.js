@@ -1,21 +1,7 @@
-var colors = require('colors');
 var fs = require('fs');
 var argv = process.argv.slice(2);
 var child_process = require('child_process');
 var testfile;
-
-colors.setTheme({
-  silly: ['rainbow'],
-  input: 'grey',
-  verbose: 'cyan',
-  prompt: 'grey',
-  info: 'green',
-  data: 'grey',
-  help: 'cyan',
-  warn: ['yellow','underline'],
-  debug: 'blue',
-  error: 'red'
-});
 
 function printUsage() {
     var usage = [
@@ -26,7 +12,7 @@ function printUsage() {
         'node runTestForC.js test_file.c dependency_file.c -w -only namePart ==> runs all tests that match the namePart',
         '-w is optional to avoid compiler warning'
     ];
-    console.log(usage.join('\t\n').debug);
+    console.log(usage.join('\t\n'));
 }
 
 
@@ -41,35 +27,30 @@ function readFile(fileName) {
     try {
         return fs.readFileSync('./' + fileName, 'utf-8');
     } catch (e) {
-        console.log(e.message.toString().error);
+        console.log(e.message);
     }
 };
 
 function extractTests(fileContent) {
-    var lines = fileContent.split('\n');
     var tests = fileContent.match(/(\btest_\w+)/g);
-    var tests = lines.map(function(line){
-      var fn = line.match(/(\btest_\w+)/g);
-      if(fn && (line.substr(0,2) != '//'))
-        return fn;
-    }).filter(function(fn){return fn;});
     if(tests == null) return [];
     return tests.map(function(test) {
         return test + "\(\);";
     });
 };
 
-function printFormattedErr(err) {
-   console.log(err.error);
+function printFormattedErr(stderr,err) {
+   process.stdout.write(stderr);
+   err&&console.log(err);
 }
 
 function printResult(test, allTests, summary,dependency,stop) {
     return function(err, stdout, stderr) {
         printTestName(test);
-        if (stdout) console.log(stdout.error);
-        if (stderr) summary.failed++, printFormattedErr(err.toString());
+        if (stdout) console.log(stdout);
+        if (err || stderr) summary.failed++,printFormattedErr(stderr,err);
         else summary.passed++
-        console.log('--------------'.data);
+        console.log('--------------');
         runAllTests(allTests, summary,dependency,stop);
     }
 }
@@ -83,11 +64,16 @@ function createFile(test) {
 }
 
 function printTestName(test) {
-    console.log('===>'.info, test.substr(0, test.length - 3).info);
+    console.log('===>', test.substr(0, test.length - 3));
+}
+
+function listTestNames(tests) {
+    console.log("loading tests from " + testfile + "\n--------------");
+    tests.forEach(printTestName);
 }
 
 function printTestCounts(summary) {
-    console.log('Passed/Total :\t'.data, (summary.passed).toString().verbose + '/'.toString().verbose + (summary.passed+summary.failed).toString().verbose);
+    console.log('Passed/Total :\t', (summary.passed) + '/' + (summary.passed+summary.failed));
     if(fs.existsSync('all_test_c_'))
       child_process.execSync('rm all_test_c_  test_runner_file_.c');
 };
@@ -106,7 +92,8 @@ function runAllTests(tests, summary,dependency,stop) {
     try{
         child_process.execSync(command);
         child_process.exec('./all_test_c_', printResult(test, tests, summary,dependency,stop));
-    }catch(e){ console.log(e.message.toString().error)};
+    }catch(e){ console.log(e.message)};
+
 };
 
 function matchedTest(option){
@@ -132,7 +119,7 @@ function optionManager(tests,option,dependency){
 
 
 function main() {
-    var files = isFile(argv);
+    var files = isFile(argv)||[];
     var gccCommand = argv.filter(isGccCommand).join('');
     var gccCommandIndex = argv.indexOf(gccCommand)>=0?1:0;
     var lastFileIndex = argv.indexOf(files[files.length-1]);
@@ -146,9 +133,8 @@ function main() {
         if (option.length>0)
             optionManager(tests,option,dependency);
         else{
-            console.log("loading tests from ".verbose + testfile.toString().warn.bold + "\n--------------".data);
+            console.log("loading tests from " + testfile + "\n--------------");
             runAllTests(tests, summary,dependency);
-
         };
     } else
         printUsage();

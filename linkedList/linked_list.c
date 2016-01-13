@@ -82,13 +82,12 @@ void * deleteElementAt(LinkedList *list, int index){
 	   temp=temp->next;
 	   i++;
 	};
-	if(index == 0){
+	if(temp->prev==NULL){
 		temp->next->prev = NULL;
 		list->head = temp->next;
-	}else if(index == list->length-1){
+	}else if(temp->next==NULL){
 		temp->prev->next = NULL;
 		list->tail = temp->prev;
-
 	}
 	else{
 		temp->next->prev = temp->prev;
@@ -96,4 +95,48 @@ void * deleteElementAt(LinkedList *list, int index){
 	}
 	list->length--;
 	return temp->value;
+};
+
+int asArray(LinkedList list, void **array, int max){
+	Element *element = list.head;
+	int i=0;
+	for (i = 0; i < max && i < list.length; i++) {
+		array[i] =  element->value;
+		element = element->next;
+	}
+	return i;
+};
+
+LinkedList filter(LinkedList list, MatchFunc *match ,void *hint){
+  LinkedList newList = createList();
+  Element *element = list.head;
+  while(element != NULL){
+    if(match(NULL, element->value))
+      add_to_list(&newList, element -> value);
+    element = element -> next;
+  };
+  return newList;
+};
+
+LinkedList reverse(LinkedList list){
+	LinkedList reversedList = createList();
+	Element *current = list.tail;
+	while (current !=  NULL){
+       add_to_list(&reversedList ,current->value);
+		 current = current->prev;
+   }
+	return reversedList;
+}
+
+LinkedList map(LinkedList list, ConvertFunc convert, void *hint){
+	LinkedList mappedList = createList();
+	Element *element = list.head;
+	Element *mapDest = list.head;
+	while(element != NULL){
+		convert(hint, element->value, mapDest->value);
+		add_to_list(&mappedList,mapDest->value);
+		element = element->next;
+		mapDest = mapDest->next;
+	}
+	return mappedList;
 };

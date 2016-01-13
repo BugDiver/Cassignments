@@ -53,7 +53,7 @@ void test_get_first_element_of_the_list_should_return_address_of_first_added_ele
 }
 
 
-void test_get_last_element_of_the_list_should_return_address_of_first_added_element(){
+void test_get_last_element_of_the_list_should_return_address_of_last_added_element(){
 
 	LinkedList list  =createList();
 
@@ -181,14 +181,120 @@ void test_deleteElementAt_should_delete_the_element_at_give_index_and_return_ref
 	assert(*(int *)getElementAt(list,1) == 42);
 };
 
-// int main(){
-// 	test_create_linked_list();
-// 	test_add_to_list_should_add_a_data_in_list();
-// 	test_get_first_element_of_the_list_should_return_address_of_first_added_element();
-// 	test_get_last_element_of_the_list_should_return_address_of_first_added_element();
-// 	test_for_each_performs_a_given_operation_on_every_element();
-// 	test_getElementAt_should_return_the_refrence_of_value_at_given_index();
-// 	test_deleteElementAt_should_delete_the_element_at_give_index_and_return_refrence_of_deleted_value();
-// 	printf("all okk!!!\n");
-// 	return 0;
-// }
+void test_asArray_should_copy_all_elements_of_list_into_given_array(){
+	LinkedList list  =createList();
+
+	int num1 = 12,num2 = 22,num3 = 32,num4 = 42,num5=52;
+	add_to_list(&list ,&num1);
+	add_to_list(&list ,&num2);
+	add_to_list(&list ,&num3);
+	add_to_list(&list ,&num4);
+	add_to_list(&list ,&num5);
+
+	void *dest[5];
+	int length  =asArray(list, dest, 5);
+	assert(length = 5);
+	assert(dest[0] == &num1);
+	assert(dest[1] == &num2);
+	assert(dest[2] == &num3);
+	assert(dest[3] == &num4);
+	assert(dest[4] == &num5);
+
+};
+
+void test_asArray_should_copy_elements_equal_to_the_size_of_array(){
+	LinkedList list  =createList();
+   int num1 = 12,num2 = 22,num3 = 32,num4 = 45,num5=55;
+
+   add_to_list(&list ,&num1);
+   add_to_list(&list ,&num2);
+   add_to_list(&list ,&num3);
+   add_to_list(&list ,&num4);
+   add_to_list(&list ,&num5);
+
+	void *dest[5];
+	int length = asArray(list, dest, 3);
+	assert(length == 3);
+	assert(dest[0] == &num1);
+	assert(dest[1] == &num2);
+	assert(dest[2] == &num3);
+	assert(dest[3] != &num4);
+	assert(dest[4] != &num5);
+};
+
+int isEven(void *hint, void *num){
+	if(*(int *)num % 2 == 0)
+		return 1;
+	return 0;
+};
+
+void test_filter_should_return_a_new_linked_list_which_contains_only_matching_elements(){
+	LinkedList list = createList();
+	int num1 = 1,num2 = 2,num3 = 3,num4 = 4,num5 = 5;
+
+	add_to_list(&list, &num1);
+	add_to_list(&list, &num2);
+	add_to_list(&list, &num3);
+	add_to_list(&list, &num4);
+	add_to_list(&list, &num5);
+
+	int hint = 2;
+	LinkedList newlist = filter(list, &isEven ,&hint);
+
+	assert(getElementAt(newlist, 0) == &num2);
+	assert(getElementAt(newlist, 1) == &num4);
+	assert(getElementAt(newlist, 2) == NULL);
+}
+
+void test_reverse_should_return_a_new_list_with_all_elements_in_reverse_order(){
+	LinkedList list = createList();
+	int num1 = 1,num2 = 2,num3 = 3,num4 = 4,num5 = 5;
+
+	add_to_list(&list, &num1);
+	add_to_list(&list, &num2);
+	add_to_list(&list, &num3);
+	add_to_list(&list, &num4);
+	add_to_list(&list, &num5);
+
+	LinkedList reversedList = reverse(list);
+	assert(getElementAt(reversedList ,0) == &num5);
+	assert(getElementAt(reversedList ,1) == &num4);
+	assert(getElementAt(reversedList ,2) == &num3);
+	assert(getElementAt(reversedList ,3) == &num2);
+	assert(getElementAt(reversedList ,4) == &num1);
+
+	assert(getElementAt(list ,0) == &num1);
+	assert(getElementAt(list ,1) == &num2);
+	assert(getElementAt(list ,2) == &num3);
+	assert(getElementAt(list ,3) == &num4);
+	assert(getElementAt(list ,4) == &num5);
+};
+void multiplyBy(void* hint, void* sourceItem, void* destinationItem){
+	int *num = (int *)sourceItem;
+   int *multiplier = (int *)hint;
+   *num = *num * *multiplier;
+   *((int *)destinationItem) = *num;
+};
+
+void test_map_should_return_new_list_which_consist_the_all_mapped_elements(){
+	LinkedList list = createList();
+	int num1 = 1,num2 = 2,num3 = 3,num4 = 4,num5 = 5;
+
+	add_to_list(&list, &num1);
+	add_to_list(&list, &num2);
+	add_to_list(&list, &num3);
+	add_to_list(&list, &num4);
+	add_to_list(&list, &num5);
+
+	int multiplier = 10;
+	LinkedList mappedList = map(list ,&multiplyBy,&multiplier);
+
+	assert(*(int *)getElementAt(mappedList ,0) == 10);
+	assert(*(int *)getElementAt(mappedList ,1) == 20);
+	assert(*(int *)getElementAt(mappedList ,2) == 30);
+	assert(*(int *)getElementAt(mappedList ,3) == 40);
+	assert(*(int *)getElementAt(mappedList ,4) == 50);
+
+
+
+};
