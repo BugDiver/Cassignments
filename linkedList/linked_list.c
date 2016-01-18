@@ -2,6 +2,12 @@
 #include <stdlib.h>
 #include "linked_list.h"
 
+student createStudent(){
+	student std;
+	std.name = NULL;
+	std.roll_no = 0;
+	return std;
+}
 
 void intializeList(LinkedList *list){
 	list->head = list->tail = NULL;
@@ -129,14 +135,14 @@ LinkedList reverse(LinkedList list){
 }
 
 LinkedList map(LinkedList list, ConvertFunc convert, void *hint){
-	LinkedList mappedList = createList();
 	Element *element = list.head;
-	Element *mapDest = list.head;
+	LinkedList mappedList = createList();
+	void *dest;
 	while(element != NULL){
-		convert(hint, element->value, mapDest->value);
-		add_to_list(&mappedList,mapDest->value);
+		dest = malloc(sizeof(void *));
+		convert(hint,element->value ,dest);
+		add_to_list(&mappedList,dest);
 		element = element->next;
-		mapDest = mapDest->next;
 	}
 	return mappedList;
 };

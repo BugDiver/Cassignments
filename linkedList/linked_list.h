@@ -1,4 +1,8 @@
-typedef void (*ElementProcessor)(void *);
+typedef struct student{
+	char *name;
+	int roll_no;
+}student;
+
 
 typedef struct element {
 	void *value;
@@ -14,12 +18,16 @@ typedef struct linked_list {
 	int length;
 }LinkedList;
 
+
+typedef void (*ElementProcessor)(void *);
 typedef int(MatchFunc)(void *, void*);
 typedef void(ConvertFunc)(void*,void*,void*);
 typedef void*(Reducer)(void*, void*, void*);
 
 
 void intializeList(LinkedList *);
+
+student createStudent();
 LinkedList createList();
 int add_to_list(LinkedList *,void *);
 void *get_first_element(LinkedList);
