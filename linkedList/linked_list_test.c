@@ -81,7 +81,7 @@ void test_add_to_list_should_also_add_a_reference_of_user_defined_data_type(){
 	std2.roll_no = 00;
 	std3.name = "Kachara";
 	std3.roll_no = 100;
-	
+
 	add_to_list(&list ,&std1);
 	add_to_list(&list ,&std2);
 	add_to_list(&list ,&std3);
@@ -156,7 +156,7 @@ void test_get_first_element_of_the_list_should_return_address_of_last_added_elem
 	std2.roll_no = 00;
 	std2.name = "Kachara";
 	std2.roll_no = 100;
-	
+
 
 	add_to_list(&list ,&std1);
 	add_to_list(&list ,&std2);
@@ -241,7 +241,6 @@ void test_get_last_element_of_the_list_should_return_address_of_last_added_eleme
 	std2.roll_no = 00;
 	std3.name = "Kachara";
 	std3.roll_no = 100;
-	
 
 	add_to_list(&list ,&std1);
 	add_to_list(&list ,&std2);
@@ -259,7 +258,6 @@ void test_get_last_element_of_the_list_should_return_address_of_last_added_eleme
 
 void increment(void *value){
 	(*(int *)value)++;
-
 };
 
 void test_for_each_performs_a_given_operation_on_every_element(){
